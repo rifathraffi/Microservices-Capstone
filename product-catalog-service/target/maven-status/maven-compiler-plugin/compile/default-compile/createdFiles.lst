@@ -1,0 +1,9 @@
+com\example\productcatalog\model\InventoryResult.class
+com\example\productcatalog\model\InventoryError.class
+com\example\productcatalog\model\ProductDto.class
+com\example\productcatalog\ProductCatalogApplication.class
+com\example\productcatalog\service\ProductService.class
+com\example\productcatalog\model\Product.class
+com\example\productcatalog\repository\ProductRepository.class
+com\example\productcatalog\controller\ProductController.class
+com\example\productcatalog\model\InventorySuccess.class

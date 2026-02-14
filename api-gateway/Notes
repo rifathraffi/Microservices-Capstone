@@ -1,0 +1,34 @@
+        return builder.routes()
+                .route("auth-service", r -> r.path("/auth/**")
+                        .uri("lb://JWT-AUTH-SERVICE")) 
+                .route("book-service", r -> r.path("/api/v1/books/**")
+                        .filters(f -> f.filter(authenticationFilter)
+                        		.circuitBreaker(cb ->
+                        		cb.setName("bookServiceCB")
+                        		  .setFallbackUri("forward:/fallback")))
+                        .uri("lb://BOOK-SERVICE"))
+                .build();
+
+      @GetMapping("/fallback")
+	    public Mono<ResponseEntity<String>> serviceFallback(ServerWebExchange exchange) {
+	        
+	        Throwable exception = exchange.getAttribute(
+	            ServerWebExchangeUtils.CIRCUITBREAKER_EXECUTION_EXCEPTION_ATTR
+	        );
+	        
+	        String errorMessage;
+	        
+	            
+	            if (exception.getCause() instanceof java.util.concurrent.TimeoutException) {
+	                errorMessage = "Service Unavailable (Timeout). The downstream service took too long to respond.";
+	            } else {
+	                errorMessage = "Service Unavailable (Error). The downstream service is currently experiencing issues.";
+	            }
+	            
+	        return Mono.just(
+	            ResponseEntity
+	                .status(HttpStatus.SERVICE_UNAVAILABLE) 
+	                .body("Fallback Response: " + errorMessage)
+	        );
+	    }
+	              
