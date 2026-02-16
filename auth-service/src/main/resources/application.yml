@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: JWT-AUTH-SERVICE
+
+server:
+  port: 8083
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+jwt:
+  secret: "${JWT_SECRET:MySecretKeyForJwtTokenGenerationThatIsAtLeast256BitsLongForHs256AlgorithmSecurity}"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

@@ -6,6 +6,7 @@ Spring Boot 4 microservices project with Java 17 (records, sealed types, text bl
 
 - **Service Registry (Eureka)** – port 8761 – Discovery server
 - **API Gateway** – port 8020 – Spring Cloud Gateway, JWT auth, routing, logging
+- **Auth Service** – port 8083 – JWT token issuance (login, register)
 - **Product Catalog Service** – port 8081 – Spring Data JPA, PostgreSQL
 - **Order Management Service** – port 8082 – Order lifecycle, async communication
 
@@ -34,6 +35,7 @@ Default credentials: `postgres/postgres`. Override in `application.yml` per serv
 4. Start in this order:
    - **service-registry** (Eureka)
    - **api-gateway**
+   - **auth-service**
    - **product-catalog-service**
    - **order-management-service**
 
@@ -45,7 +47,27 @@ Base URL: `http://localhost:8020`
 |------|---------|------|
 | `/api/v1/products/**` | Product Catalog | JWT |
 | `/api/v1/orders/**` | Order Management | JWT |
-| `/api/v1/auth/**` | Auth (external) | No |
+| `/api/v1/auth/**` | Auth Service | No |
+
+### Get JWT Token
+
+**Login** (demo users: `admin`/`admin123`, `user`/`user123`):
+
+```bash
+curl -X POST http://localhost:8020/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}'
+```
+
+**Register** (creates user and returns token):
+
+```bash
+curl -X POST http://localhost:8020/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username":"newuser","password":"password123"}'
+```
+
+Response: `{"token":"eyJ...","username":"admin","type":"Bearer"}` — use the `token` value in the `Authorization` header.
 
 ### Example: Create Product
 

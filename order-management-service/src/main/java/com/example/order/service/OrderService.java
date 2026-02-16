@@ -95,16 +95,19 @@ public class OrderService {
 		});
 	}
 
+	@Transactional(readOnly = true)
 	public List<OrderDto> findByCustomer(String customerId) {
 		return orderRepository.findByCustomerIdOrderByCreatedAtDesc(customerId).stream()
 				.map(this::toDto)
 				.collect(Collectors.toList());
 	}
 
+	@Transactional(readOnly = true)
 	public Optional<OrderDto> findByOrderNumber(String orderNumber) {
 		return orderRepository.findByOrderNumber(orderNumber).map(this::toDto);
 	}
 
+	@Transactional(readOnly = true)
 	public Optional<OrderDto> findById(Long id) {
 		return orderRepository.findById(id).map(this::toDto);
 	}

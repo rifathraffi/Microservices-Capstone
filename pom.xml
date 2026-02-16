@@ -20,6 +20,7 @@
 	<modules>
 		<module>service-registry</module>
 		<module>api-gateway</module>
+		<module>auth-service</module>
 		<module>product-catalog-service</module>
 		<module>order-management-service</module>
 	</modules>
