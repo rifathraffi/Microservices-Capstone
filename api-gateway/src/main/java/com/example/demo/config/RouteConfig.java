@@ -23,11 +23,6 @@ public class RouteConfig {
 						.uri("lb://order-management-service"))
 				// Auth endpoints - no JWT (legacy/external services)
 				.route(p -> p.path("/api/v1/auth/**").uri("lb://JWT-AUTH-SERVICE"))
-				.route(p -> p.path("/api/v1/customers/**")
-						.filters(f -> f.filter(custom))
-						.uri("lb://DATA-JPA-DSL-MULTIPART"))
-				.route(p -> p.path("/api/v1/invoices/**").filters(f -> f.filter(custom))
-						.uri("lb://INVOICE-SERVICE"))
 				.build();
 	}
 }
