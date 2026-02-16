@@ -67,7 +67,18 @@ curl -X POST http://localhost:8020/api/v1/auth/register \
   -d '{"username":"newuser","password":"password123"}'
 ```
 
-Response: `{"token":"eyJ...","username":"admin","type":"Bearer"}` — use the `token` value in the `Authorization` header.
+Response: `{"token":"eyJ...","username":"admin","role":"ADMIN","type":"Bearer"}` — use the `token` value in the `Authorization` header.
+
+### Role-Based Access
+
+| Role | Demo user | Permissions |
+|------|-----------|-------------|
+| **ADMIN** | admin/admin123 | Full access (products, orders, list by customer) |
+| **USER** | user/user123 | Create order, GET order by ID/number; **cannot** list orders by customer |
+
+- **USER** calling `GET /api/v1/orders?customerId=xxx` returns **403 Forbidden**
+- **ADMIN** can access all endpoints
+- New registrations receive **USER** role
 
 ### Example: Create Product
 

@@ -30,9 +30,9 @@ public class AuthController {
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
 		return userService.authenticate(request.username(), request.password())
-				.<ResponseEntity<?>>map(username -> {
-					String token = jwtTokenService.generateToken(username);
-					return ResponseEntity.ok(AuthResponse.of(token, username));
+				.<ResponseEntity<?>>map(auth -> {
+					String token = jwtTokenService.generateToken(auth.username(), auth.role().name());
+					return ResponseEntity.ok(AuthResponse.of(token, auth.username(), auth.role().name()));
 				})
 				.orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED)
 						.body(Map.of("error", "Invalid username or password")));
@@ -44,7 +44,8 @@ public class AuthController {
 			return ResponseEntity.status(HttpStatus.CONFLICT)
 					.body(Map.of("error", "Username already exists"));
 		}
-		String token = jwtTokenService.generateToken(request.username());
-		return ResponseEntity.status(HttpStatus.CREATED).body(AuthResponse.of(token, request.username()));
+		// New registrations get USER role
+		String token = jwtTokenService.generateToken(request.username(), "USER");
+		return ResponseEntity.status(HttpStatus.CREATED).body(AuthResponse.of(token, request.username(), "USER"));
 	}
 }

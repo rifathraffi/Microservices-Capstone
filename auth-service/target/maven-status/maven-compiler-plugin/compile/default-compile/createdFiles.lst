@@ -1,7 +1,10 @@
 com\example\auth\model\LoginRequest.class
 com\example\auth\model\RegisterRequest.class
+com\example\auth\model\Role.class
 com\example\auth\model\AuthResponse.class
 com\example\auth\service\UserService.class
 com\example\auth\controller\AuthController.class
 com\example\auth\service\JwtTokenService.class
+com\example\auth\service\UserService$AuthResult.class
 com\example\auth\AuthServiceApplication.class
+com\example\auth\service\UserService$UserInfo.class

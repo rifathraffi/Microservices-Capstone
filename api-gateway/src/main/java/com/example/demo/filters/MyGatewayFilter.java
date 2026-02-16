@@ -61,8 +61,16 @@ public class MyGatewayFilter implements GatewayFilter {
 	            }
 
 	            String username = jwtUtil.extractUsername(token);
+	            String role = jwtUtil.extractRole(token);
+
+	            // USER role cannot list orders by customer (GET /api/v1/orders?customerId=...)
+	            if ("USER".equals(role) && isListOrdersByCustomer(request)) {
+	                return this.onError(exchange, "Forbidden: USER role cannot list orders by customer", HttpStatus.FORBIDDEN);
+	            }
+
 	            ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
 	                    .header("X-Auth-User", username)
+	                    .header("X-Auth-Role", role)
 	                    .build();
 
 	            return chain.filter(exchange.mutate().request(mutatedRequest).build());
@@ -71,8 +79,13 @@ public class MyGatewayFilter implements GatewayFilter {
 	        return chain.filter(exchange);
 	    }
 	    
+	    private boolean isListOrdersByCustomer(ServerHttpRequest request) {
+	        return "GET".equalsIgnoreCase(request.getMethod().name())
+	                && request.getURI().getPath().contains("/api/v1/orders")
+	                && request.getQueryParams().containsKey("customerId");
+	    }
+
 	    private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
-	    	
 	        ServerHttpResponse response = exchange.getResponse();
 	        response.setStatusCode(httpStatus);
 	        return response.setComplete();
